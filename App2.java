@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 //import java.util.Arrays;
@@ -28,6 +29,7 @@ public class App2 {
 
         String screen = DASHBOARD;
         ArrayList<String> holders = new ArrayList();
+        String[] []customers = new String[0][];
         //String[] accountNumber = {};
 
         mainLoop:
@@ -66,8 +68,10 @@ public class App2 {
 
                 case CREATE_ACCOUNT:
                     // Automatically ID Printing
-                    System.out.printf("ID: SDB-%05d \n", (holders[index][0]+ 1));
-
+                    
+                    String id = String.format("ID: SDB-%05d \n", customers.length +1);
+                    System.out.println(id);
+                    
                     boolean valid = true;
                     String name;
                     double deposit;
@@ -93,7 +97,7 @@ public class App2 {
                             }   
                         }
                         
-                    }while(true);
+                    }while(!valid);
 
                     // Check Deposi Amount
                     amountValidation:
@@ -107,17 +111,12 @@ public class App2 {
                             valid = false;
                             System.out.printf(ERROR_MSG, "Insufficient Balance");
                             continue amountValidation; 
-                        } else {
-                            valid = true;
-                            break;
                         }
-                    }while(true);
-                    // Add account holder information to the holders list
-                    //holders.add(new String[]{name, String.valueOf(deposit)});
-                    // Move back to the main dashboard
                     screen = DASHBOARD;
                     break;
+                    }while(!valid);
+                    
             }
-        }while(true);
-    }
+    }while(true);
+}
 }
