@@ -6,9 +6,7 @@ import java.util.Scanner;
 
 public class App2 {
     private static final Scanner scanner = new Scanner(System.in);
-    /**
-     * @param args
-     */
+    
     public static void main(String[] args) {
         final String CLEAR = "\033[H\033[2J";
         final String COLOR_BLUE_BOLD = "\033[34;1m";
@@ -28,8 +26,8 @@ public class App2 {
         final String SUCCESS_MSG = String.format("\t%s%s%s\n", COLOR_GREEN_BOLD, "%s", RESET);
 
         String screen = DASHBOARD;
-        ArrayList<String> holders = new ArrayList();
-        String[] []customers = new String[0][];
+        //ArrayList<String> holders = new ArrayList();
+        String[][] customers = new String[0][];
         //String[] accountNumber = {};
 
         mainLoop:
@@ -71,7 +69,7 @@ public class App2 {
                     
                     String id = String.format("ID: SDB-%05d \n", customers.length +1);
                     System.out.println(id);
-                    
+
                     boolean valid = true;
                     String name;
                     double deposit;
@@ -99,7 +97,7 @@ public class App2 {
                         
                     }while(!valid);
 
-                    // Check Deposi Amount
+                    // Check Deposit Amount
                     amountValidation:
                     do{
                         valid = true;
@@ -110,11 +108,96 @@ public class App2 {
                         if (deposit < 5000) {
                             valid = false;
                             System.out.printf(ERROR_MSG, "Insufficient Balance");
-                            continue amountValidation; 
+                            continue amountValidation;
                         }
-                    screen = DASHBOARD;
-                    break;
+
                     }while(!valid);
+
+                    
+
+                    String[][] newCustomer = new String [customers.length+1][3];
+                    for (int i = 0; i < customers.length; i++) {
+                        newCustomer[i] = customers[i];
+                    }
+    
+                    newCustomer[newCustomer.length-1][0] = id;
+                    newCustomer[newCustomer.length-1][1] = name;
+                    newCustomer[newCustomer.length-1][2] = String.valueOf(deposit);
+
+                    customers = newCustomer;
+
+                    //System.out.println(Arrays.toString(customers));
+
+                    System.out.printf(SUCCESS_MSG, String.format("%s-%s added succesfully", id, name));
+
+                    System.out.print("Do you want to add another ? (Y/n) : \n");
+                    if (scanner.nextLine().toUpperCase().strip().equals("Y"))
+                    continue;
+
+                    screen = DASHBOARD; 
+                    break;
+
+                case DEPOSITS:
+
+                String accountNumber;
+                // Enter the A/C No:
+                accountNumberValidation:
+                do{
+                    valid = true;
+                    System.out.print("Enter the Account Number: ");
+                    accountNumber = scanner.nextLine().strip();
+
+                    if (accountNumber.isEmpty()) {
+                        valid = false;
+                        System.out.printf(ERROR_MSG, "Can't be Empty");
+                        System.out.print("Do you want to try again? (Y/n) : \n");
+                        if (scanner.nextLine().toUpperCase().strip().equals("Y"))
+                        continue accountNumberValidation; 
+                        screen = DASHBOARD;
+                        break;
+
+                    } 
+                    if (!accountNumber.startsWith("SDB-")) {
+                        valid = false;
+                        System.out.printf(ERROR_MSG, "Invalid Format");
+                        System.out.print("Do you want to try again ? (Y/n) : \n");
+                        if (scanner.nextLine().toUpperCase().strip().equals("y"))
+                        continue accountNumberValidation;
+                        screen = DASHBOARD;
+                        break;
+
+                    }
+                    String idDigits = accountNumber.substring(4);
+
+                    for (int j = 0; j < idDigits.length(); j++) {
+
+                        if (!Character.isDigit(idDigits.charAt(j)) || Character.isSpaceChar(idDigits.charAt(j))) {
+                            valid =false;
+                            System.out.printf(ERROR_MSG, "Invalid Format");
+                            System.out.print("Do you want to try again ? (Y/n) : \n");
+                            if (scanner.nextLine().toUpperCase().strip().equals("y"))continue;  
+                            screen = DASHBOARD; 
+                            break;
+                        }
+                    }
+
+                }while(!valid);   
+
+                for (int j = 0; j < customers.length; j++) {
+                            if (accountNumber.equals(customers[j])) {
+
+                                //int accNumber = customers[j][0];
+                                valid = false;
+                                System.out.printf(ERROR_MSG, "Not Found");
+                                System.out.print("Do you want to try again ? (Y/n) : \n");
+                                if (!scanner.nextLine().toUpperCase().strip().equals("Y"))
+                                screen = DASHBOARD;
+                                break;
+                            }
+
+                        }
+
+                //Current Balance  
                     
             }
     }while(true);
